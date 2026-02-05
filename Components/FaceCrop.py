@@ -20,6 +20,9 @@ def crop_to_vertical(input_video_path, output_video_path):
 
     vertical_height = int(original_height)
     vertical_width = int(vertical_height * 9 / 16)
+    # Ensure dimensions are even (required by many codecs)
+    vertical_width = vertical_width - (vertical_width % 2)
+    vertical_height = vertical_height - (vertical_height % 2)
     print(f"Output dimensions: {vertical_width}x{vertical_height}")
 
     if original_width < vertical_width:
@@ -78,8 +81,12 @@ def crop_to_vertical(input_video_path, output_video_path):
         print(f"Scaling video from {original_width}x{original_height} to {scaled_width}x{scaled_height}")
         print(f"Half-width display: showing {scaled_width//2}px wide section from {scaled_width}px scaled frame")
 
-    # Write output
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    # Write output - use XVID for better Windows compatibility
+    import platform
+    if platform.system() == 'Windows':
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    else:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (vertical_width, vertical_height))
     global Fps
     Fps = fps
@@ -156,7 +163,11 @@ def crop_to_vertical(input_video_path, output_video_path):
         if cropped_frame.shape[1] == 0:
             print(f"Warning: Empty crop at frame {frame_count}")
             break
-        
+
+        # Ensure frame matches expected dimensions before writing
+        if cropped_frame.shape[0] != vertical_height or cropped_frame.shape[1] != vertical_width:
+            cropped_frame = cv2.resize(cropped_frame, (vertical_width, vertical_height), interpolation=cv2.INTER_LANCZOS4)
+
         out.write(cropped_frame)
         frame_count += 1
         
