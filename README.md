@@ -2,6 +2,12 @@
 
 AI-powered tool to automatically generate engaging YouTube Shorts from long-form videos. Uses GPT-4o-mini and Whisper to extract highlights, add subtitles, and crop videos vertically for social media.
 
+Looking for an api to build your own Opus-clip style product ? Check the api below
+
+https://muapi.ai/playground/autocrop 
+
+https://muapi.ai/playground/ai-clipping
+
 ![longshorts](https://github.com/user-attachments/assets/3f5d1abf-bf3b-475f-8abf-5e253003453a)
 
 ## Features
